@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Bridge – Ứng dụng của chúng tôi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #FFF5E1;
+      margin: 0;
+      padding: 0;
+      color: #654321;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header img {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      display: block;
+      border-bottom: 3px solid #F2DFC2;
+    }
+    .banner-text {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #654321;
+      margin: 15px auto 25px;
+      max-width: 80%;
+    }
+    .container {
+      flex: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 15px 50px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #8B4513;
+    }
+    .app-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .app-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .app-card:hover { transform: translateY(-4px); }
+    .app-card img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      border-radius: 20%;
+      background-color: #fafafa;
+      padding: 8px;
+    }
+    .app-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .app-info h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #8B4513;
+    }
+    .app-info p {
+      margin: 5px 0 0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    footer {
+      background-color: #F2DFC2;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+    }
+    footer a {
+      color: #8B4513;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="image/banner.jpg" alt="App Bridge Banner">
+  </header>
+
+  <div class="banner-text">
+    Khám phá công nghệ thông minh, mang lại niềm vui và tiện ích cho cuộc sống mỗi ngày!
+  </div>
+
+  <div class="container">
+    <h1>Ứng dụng của chúng tôi</h1>
+    <div class="app-list" id="appList"></div>
+  </div>
+
+  <footer>
+    <p>Nhà phát triển: <strong>App Bridge</strong></p>
+    <p>Email: <a href="mailto:appbridgevietnam@gmail.com">appbridgevietnam@gmail.com</a></p>
+    <p>Số điện thoại: <a href="tel:0986495949">0986495949</a></p>
+    <p><a href="https://play.google.com/store/apps/dev?id=6205244028782286901" target="_blank">Xem tất cả ứng dụng trên Google Play</a></p>
+  </footer>
+
+  <script>
+    const apps = [
+      { name: "Công Suất Sạc", icon: "image/chargin-power-logo.png", desc: "Track charging current, power, and detailed battery status", url: "https://play.google.com/store/apps/details?id=vn.lecon.device.info" },
+      { name: "Ngày Gọn Gàng", icon: "image/ngay-gon-gang-logo.png", desc: "Quản lý công việc trong ngày, đơn giản, hiệu quả, không cần tài khoản", url: "https://play.google.com/store/apps/details?id=vn.lecon.smart_todo_list" },
+      { name: "Kết Nối WiFi", icon: "image/wifi-connection-logo.png", desc: "Tìm và kết nối Wi-Fi xung quanh dễ dàng, nhanh chóng và tiện lợi", url: "https://play.google.com/store/apps/details?id=vn.icheck.connect.wifi" },
+      { name: "Tải Nhiều File(s)", icon: "image/tai-nhieu-files-logo.png", desc: "Ứng dụng giúp bạn tải cả một danh sách hàng trăm file một cách nhanh chóng", url: "https://play.google.com/store/apps/details?id=vn.lecon.download.files" }
+    ];
+
+    const appList = document.getElementById("appList");
+    apps.forEach(app => {
+      const card = document.createElement("div");
+      card.className = "app-card";
+      card.innerHTML = `<img src="${app.icon}" alt="${app.name}"><div class='app-info'><h3>${app.name}</h3><p>${app.desc}</p></div>`;
+      card.addEventListener("click", () => window.open(app.url, "_blank"));
+      appList.appendChild(card);
+    });
+  </script>
+</body>
+</html>
