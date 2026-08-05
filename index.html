@@ -7,169 +7,286 @@
 <title>App Bridge – Ứng dụng của chúng tôi</title>
 
 <style>
-
-body{
-  margin:0;
-  background:#f5f5f7;
-  color:#1d1d1f;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;
+/* Apple-style typography and variables */
+:root {
+  --bg-color: #f5f5f7;
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --blue-accent: #0071e3;
+  --blue-hover: #0077ED;
 }
 
-header img{
-  width:100%;
-  max-height:420px;
-  object-fit:cover;
-  display:block;
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.banner-text{
-  text-align:center;
-  font-size:18px;
-  color:#6e6e73;
-  margin:30px auto 60px;
-  max-width:700px;
-  line-height:1.6;
-  padding:0 20px;
+/* Glassmorphism Navigation */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(245, 245, 247, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 14px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
 }
 
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:0 20px 80px;
+nav.nav-visible {
+  transform: translateY(0);
+  opacity: 1;
 }
 
-h1{
-  text-align:center;
-  font-size:40px;
-  font-weight:600;
-  margin-bottom:50px;
+nav .brand {
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
-.app-list{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:24px;
+/* Hero Section */
+.banner-full {
+  width: 100%;
+  margin-bottom: 40px;
 }
 
-.app-card{
-  background:white;
-  border-radius:22px;
-  padding:22px;
-  display:flex;
-  align-items:center;
-  gap:20px;
-  cursor:pointer;
-  transition:all .25s ease;
-  box-shadow:0 4px 18px rgba(0,0,0,0.05);
+.banner-full img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-.app-card:hover{
-  transform:translateY(-4px);
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+.hero {
+  max-width: 1060px;
+  margin: 0 auto 40px;
+  padding: 0 20px;
+  text-align: center;
 }
 
-.app-card img{
-  width:72px;
-  height:72px;
-  border-radius:18px;
-  object-fit:contain;
-  background:#f5f5f7;
-  padding:10px;
+.hero h1 {
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  margin: 0 0 16px 0;
 }
 
-.app-info h3{
-  margin:0;
-  font-size:18px;
-  font-weight:600;
+.hero p {
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin: 0 auto 60px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
 }
 
-.app-info p{
-  margin:6px 0 0;
-  color:#6e6e73;
-  font-size:14px;
-  line-height:1.5;
+/* Apps Grid Container */
+.container {
+  max-width: 1060px;
+  margin: auto;
+  padding: 0 20px 80px;
 }
 
-footer{
-  border-top:1px solid #e5e5e7;
-  text-align:center;
-  padding:40px 20px;
-  font-size:14px;
-  color:#6e6e73;
-  background:white;
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 30px;
+  padding-left: 10px;
 }
 
-footer a{
-  color:#0071e3;
-  text-decoration:none;
+.app-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
 }
 
-footer a:hover{
-  text-decoration:underline;
+/* App Store Style Cards */
+.app-card {
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255,255,255,0.5);
+  cursor: pointer;
 }
 
+.app-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  background: white;
+}
+
+.app-card img {
+  width: 76px;
+  height: 76px;
+  border-radius: 18px; /* Standard iOS icon radius */
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.app-info {
+  flex: 1;
+}
+
+.app-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.app-info p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* "GET" Button Style */
+.get-button {
+  background: #f0f0f5;
+  color: var(--blue-accent);
+  border-radius: 16px;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.app-card:hover .get-button {
+  background: var(--blue-accent);
+  color: white;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid #d2d2d7;
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: #f5f5f7;
+}
+
+footer .footer-links {
+  margin-bottom: 20px;
+}
+
+footer a {
+  color: #1d1d1f;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 36px; }
+  .hero p { font-size: 18px; }
+  .app-list { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 
 <body>
 
-<header>
-<img src="images/banner.jpg" alt="App Bridge Banner">
-</header>
+<!-- Glass Navbar -->
+<nav>
+  <div class="brand">
+    <img src="images/common/logo.png" alt="App Bridge Logo" style="height: 32px; vertical-align: middle; margin-right: 10px; border-radius: 8px;">
+    <span style="vertical-align: middle;">App Bridge</span>
+  </div>
+</nav>
 
-<div class="banner-text">
-Khám phá công nghệ thông minh, mang lại niềm vui và tiện ích cho cuộc sống mỗi ngày.
+<!-- Hero Banner -->
+<div class="banner-full">
+  <img src="images/common/banner.jpg" alt="App Bridge Banner">
+</div>
+
+<!-- Hero Section -->
+<div class="hero">
+  <h1>Thiết kế cho tương lai.</h1>
+  <p>Khám phá các ứng dụng thông minh, tối giản, mang lại tiện ích tối đa cho cuộc sống mỗi ngày của bạn.</p>
 </div>
 
 <div class="container">
-
-<h1>Ứng dụng của chúng tôi</h1>
-
-<div class="app-list" id="appList"></div>
-
+  <div class="section-title">Danh sách ứng dụng</div>
+  <div class="app-list" id="appList"></div>
 </div>
 
 <footer>
-<p>Nhà phát triển: <strong>App Bridge</strong></p>
-<p>Email: <a href="mailto:appbridgevietnam@gmail.com">appbridgevietnam@gmail.com</a></p>
-<p>Số điện thoại: <a href="tel:0986495949">0986495949</a></p>
-<p>
-<a href="https://play.google.com/store/apps/dev?id=6205244028782286901" target="_blank">
-Xem tất cả ứng dụng trên Google Play
-</a>
-</p>
+  <div class="footer-links">
+    Email: <a href="mailto:appbridgevietnam@gmail.com">appbridgevietnam@gmail.com</a> | 
+    <a href="https://play.google.com/store/apps/dev?id=6205244028782286901" target="_blank">Google Play Store</a>
+  </div>
+  <p>&copy; 2025 App Bridge Vietnam. All rights reserved.</p>
 </footer>
 
+<script src="js/apps-data.js"></script>
 <script>
-
-const apps=[
-{ name:"Công Suất Sạc", icon:"images/chargin-power-logo.png", desc:"Track charging current, power, and detailed battery status", url:"https://play.google.com/store/apps/details?id=vn.lecon.device.info" },
-{ name:"Ngày Gọn Gàng", icon:"images/ngay-gon-gang-logo.png", desc:"Quản lý công việc trong ngày, đơn giản, hiệu quả, không cần tài khoản", url:"https://play.google.com/store/apps/details?id=vn.lecon.smart_todo_list" },
-{ name:"Kết Nối WiFi", icon:"images/wifi-connection-logo.png", desc:"Tìm và kết nối Wi-Fi xung quanh dễ dàng, nhanh chóng và tiện lợi", url:"https://play.google.com/store/apps/details?id=vn.icheck.connect.wifi" },
-{ name:"Tải Nhiều File(s)", icon:"images/tai-nhieu-files-logo.png", desc:"Ứng dụng giúp bạn tải cả một danh sách hàng trăm file một cách nhanh chóng", url:"https://play.google.com/store/apps/details?id=vn.lecon.download.files" }
-];
-
-const appList=document.getElementById("appList");
-
-apps.forEach(app=>{
-const card=document.createElement("div");
-card.className="app-card";
-
-card.innerHTML=`
-<img src="${app.icon}" alt="${app.name}">
-<div class="app-info">
-<h3>${app.name}</h3>
-<p>${app.desc}</p>
-</div>
-`;
-
-card.onclick=()=>window.open(app.url,"_blank");
-
-appList.appendChild(card);
+// Xử lý ẩn/hiện Navigation Bar khi cuộn trang
+const nav = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 80) {
+    nav.classList.add('nav-visible');
+  } else {
+    nav.classList.remove('nav-visible');
+  }
 });
 
-</script>
+const appList = document.getElementById("appList");
 
+if (typeof APPS_DATA !== 'undefined' && APPS_DATA.length > 0) {
+  APPS_DATA.forEach(app => {
+    const langData = app.locales['vi'] || app.locales['en'] || {};
+    
+    const card = document.createElement("div");
+    card.className = "app-card";
+
+    card.innerHTML = `
+      <img src="${app.iconLocal}" alt="${langData.title || ''}">
+      <div class="app-info">
+        <h3>${langData.title || 'App Bridge'}</h3>
+        <p>${langData.summary || ''}</p>
+      </div>
+      <button class="get-button">TẢI VỀ</button>
+    `;
+
+    const url = langData.url || `https://play.google.com/store/apps/details?id=${app.id}`;
+    card.onclick = () => window.open(url, "_blank");
+
+    appList.appendChild(card);
+  });
+} else {
+  appList.innerHTML = "<p style='grid-column: 1 / -1; text-align: center; color: #86868b; font-size: 16px; padding: 40px;'>Đang cập nhật danh sách ứng dụng. Vui lòng chạy lệnh npm run update-apps để tải dữ liệu.</p>";
+}
+</script>
 </body>
 </html>
