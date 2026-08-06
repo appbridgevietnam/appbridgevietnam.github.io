@@ -285,9 +285,9 @@ footer a:hover {
     <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M10.5 18.5L2 10L10.5 1.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-    Ứng dụng
+    <span id="navAppText">Apps</span>
   </a>
-  <div class="nav-brand">Chi tiết</div>
+  <div class="nav-brand" id="navDetailText">Details</div>
 </nav>
 
 <div id="content" class="container">
@@ -297,13 +297,54 @@ footer a:hover {
 
 <script src="js/apps-data.js"></script>
 <script>
+// Detect Language
+const userLang = navigator.language || navigator.userLanguage;
+const uiLang = userLang.toLowerCase().startsWith('vi') ? 'vi' : 'en';
+
+// Translations
+const i18n = {
+  vi: {
+    navAppText: "Ứng dụng",
+    navDetailText: "Chi tiết",
+    notFound: "Không tìm thấy thông tin ứng dụng.",
+    notExist: "Ứng dụng không tồn tại trong hệ thống.",
+    backHome: "Quay lại trang chủ",
+    genreDefault: "Công cụ",
+    getBtn: "TẢI VỀ",
+    rating: "ĐÁNH GIÁ",
+    installs: "LƯỢT TẢI",
+    category: "DANH MỤC",
+    age: "ĐỘ TUỔI",
+    noDesc: "Chưa có mô tả chi tiết."
+  },
+  en: {
+    navAppText: "Apps",
+    navDetailText: "Details",
+    notFound: "App info not found.",
+    notExist: "App does not exist in the system.",
+    backHome: "Back to home",
+    genreDefault: "Tools",
+    getBtn: "GET",
+    rating: "RATINGS",
+    installs: "INSTALLS",
+    category: "CATEGORY",
+    age: "AGE",
+    noDesc: "No description available."
+  }
+};
+
+const t = i18n[uiLang];
+
 document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById('navAppText').innerText = t.navAppText;
+  document.getElementById('navDetailText').innerText = t.navDetailText;
+
   const contentDiv = document.getElementById("content");
   const urlParams = new URLSearchParams(window.location.search);
   const appId = urlParams.get('id');
 
   if (!appId || typeof APPS_DATA === 'undefined') {
-    contentDiv.innerHTML = '<div class="error-state">Không tìm thấy thông tin ứng dụng. <br><br><a href="index.html">Quay lại trang chủ</a></div>';
+    contentDiv.innerHTML = `<div class="error-state">${t.notFound} <br><br><a href="index.html">${t.backHome}</a></div>`;
     return;
   }
 
@@ -311,17 +352,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = APPS_DATA.find(a => a.id === appId);
   
   if (!app) {
-    contentDiv.innerHTML = '<div class="error-state">Ứng dụng không tồn tại trong hệ thống. <br><br><a href="index.html">Quay lại trang chủ</a></div>';
+    contentDiv.innerHTML = `<div class="error-state">${t.notExist} <br><br><a href="index.html">${t.backHome}</a></div>`;
     return;
   }
 
-  // Lấy dữ liệu ngôn ngữ (Ưu tiên tiếng Việt)
-  const langData = app.locales['vi'] || app.locales['en'] || {};
+  // Lấy dữ liệu ngôn ngữ
+  const langData = app.locales[uiLang] || app.locales['en'] || app.locales['vi'] || {};
   
   // Xử lý thống kê (Reviews, Installs, v.v.)
   const score = langData.scoreText || langData.score || 'N/A';
   const installs = langData.installs || 'N/A';
-  const genre = langData.genre || 'Công cụ';
+  const genre = langData.genre || t.genreDefault;
 
   // Render Screenshots
   let screenshotsHTML = '';
@@ -349,27 +390,27 @@ document.addEventListener("DOMContentLoaded", () => {
           <p class="app-developer">${langData.developer || 'App Bridge'}</p>
         </div>
         <div class="get-btn-container">
-          <a href="${playStoreUrl}" target="_blank" class="get-button">TẢI VỀ</a>
+          <a href="${playStoreUrl}" target="_blank" class="get-button">${t.getBtn}</a>
         </div>
       </div>
     </div>
 
     <div class="app-stats">
       <div class="stat-item">
-        <span class="stat-label">ĐÁNH GIÁ</span>
+        <span class="stat-label">${t.rating}</span>
         <span class="stat-value">${score}</span>
       </div>
       <div class="stat-item">
-        <span class="stat-label">LƯỢT TẢI</span>
+        <span class="stat-label">${t.installs}</span>
         <span class="stat-value">${installs}</span>
       </div>
       <div class="stat-item">
-        <span class="stat-label">DANH MỤC</span>
+        <span class="stat-label">${t.category}</span>
         <span class="stat-value" style="font-size:16px; margin-top:4px;">${genre}</span>
       </div>
       ${langData.contentRating ? `
       <div class="stat-item">
-        <span class="stat-label">ĐỘ TUỔI</span>
+        <span class="stat-label">${t.age}</span>
         <span class="stat-value" style="font-size:16px; margin-top:4px;">${langData.contentRating}</span>
       </div>` : ''}
     </div>
@@ -378,7 +419,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <div class="description-section">
       <div class="description-content">
-        ${langData.descriptionHTML || langData.description || 'Chưa có mô tả chi tiết.'}
+        ${langData.descriptionHTML || langData.description || t.noDesc}
       </div>
     </div>
   `;

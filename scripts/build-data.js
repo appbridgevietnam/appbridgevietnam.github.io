@@ -6,13 +6,13 @@ const axios = require('axios');
 
 // Danh sách các App ID (Bao gồm các app bạn mới đưa và các app cũ trên web)
 const MY_APP_IDS = [
-  'com.appbridge.appusagestatistics',
-  'app.bridge.breakbadgabits',
-  'vn.lecon.system.fastchargechecker',
-  'app.bridge.shoppinglist',
   'com.appbridge.simplestreak',
   'vn.lecon.smart_todo_list',
+  'app.bridge.shoppinglist',
   'com.appbridgevietnam.expiryreminder',
+  'vn.lecon.system.fastchargechecker',
+  'com.appbridge.appusagestatistics',
+  'app.bridge.breakbadgabits',
   'vn.lecon.device.info',
 ];
 
@@ -27,11 +27,6 @@ const JS_OUTPUT = path.join(PROJECT_ROOT, 'js', 'apps-data.js');
 // Hàm tải icon về thư mục cục bộ
 async function downloadIcon(imageUrl, filename) {
   const filePath = path.join(ICONS_DIR, filename);
-  
-  // Nếu file đã tồn tại thì bỏ qua để tiết kiệm thời gian và tài nguyên
-  if (await fs.pathExists(filePath)) {
-    return;
-  }
 
   const writer = fs.createWriteStream(filePath);
 
@@ -54,9 +49,17 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function buildAppsData() {
   try {
-    // Đảm bảo các thư mục đầu ra tồn tại
-    await fs.ensureDir(ICONS_DIR);
+    console.log('🧹 Đang dọn dẹp dữ liệu cũ (Xóa icon cũ, cache cũ)...');
+    // Xóa sạch thư mục icon và tạo lại trống
+    await fs.emptyDir(ICONS_DIR);
+    
+    // Đảm bảo thư mục js tồn tại
     await fs.ensureDir(path.dirname(JS_OUTPUT));
+    
+    // Xóa file js cũ nếu có
+    if (await fs.pathExists(JS_OUTPUT)) {
+      await fs.remove(JS_OUTPUT);
+    }
 
     console.log('⏳ Bắt đầu lấy dữ liệu đa ngôn ngữ và tải icon từ Google Play...');
 
@@ -104,10 +107,15 @@ async function buildAppsData() {
       if (iconUrl) {
         const iconFileName = `${appId}.png`;
         await downloadIcon(iconUrl, iconFileName);
-        console.log(`  ✓ Đã kiểm tra/tải icon: ${iconFileName}`);
+        console.log(`  ✓ Đã tải icon mới: ${iconFileName}`);
       }
 
-      appsData.push(appDataItem);
+      // Chỉ thêm vào danh sách nếu lấy thành công ít nhất 1 ngôn ngữ (Tránh lỗi khi app bị xóa khỏi store hoặc gõ sai ID)
+      if (Object.keys(appDataItem.locales).length > 0) {
+        appsData.push(appDataItem);
+      } else {
+        console.log(`  [!] Bỏ qua ${appId} vì không tồn tại hoặc lỗi mạng.`);
+      }
     }
 
     // Xuất ra file JavaScript (.js) thay vì JSON để web HTML thuần có thể dùng thẻ <script> gọi dễ dàng

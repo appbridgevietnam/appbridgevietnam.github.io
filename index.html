@@ -213,11 +213,42 @@ footer a:hover {
   text-decoration: underline;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .hero h1 { font-size: 36px; }
-  .hero p { font-size: 18px; }
-  .app-list { grid-template-columns: 1fr; }
+  .hero h1 { 
+    font-size: 32px; 
+  }
+  .hero p { 
+    font-size: 16px; 
+  }
+  .app-list { 
+    grid-template-columns: 1fr; 
+    gap: 16px; 
+  }
+  .app-card {
+    padding: 16px;
+    border-radius: 18px;
+    gap: 12px;
+  }
+  .app-card img {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+  }
+  .app-info h3 {
+    font-size: 16px;
+    margin-bottom: 2px;
+  }
+  .app-info p {
+    font-size: 13px;
+    -webkit-line-clamp: 2;
+  }
+  .get-button {
+    padding: 6px 16px;
+    font-size: 13px;
+  }
+  nav {
+    padding: 12px 16px;
+  }
 }
 </style>
 </head>
@@ -234,18 +265,23 @@ footer a:hover {
 
 <!-- Hero Banner -->
 <div class="banner-full">
-  <img src="images/common/banner.jpg" alt="App Bridge Banner">
+  <picture>
+    <source media="(max-width: 768px)" srcset="images/common/banner-mobile.jpg">
+    <img src="images/common/banner.jpg" alt="App Bridge Banner">
+  </picture>
 </div>
 
 <!-- Hero Section -->
 <div class="hero">
-  <h1>Thiết kế cho tương lai.</h1>
-  <p>Khám phá các ứng dụng thông minh, tối giản, mang lại tiện ích tối đa cho cuộc sống mỗi ngày của bạn.</p>
+  <h1 id="heroTitle">Thiết kế cho tương lai.</h1>
+  <p id="heroDesc">Khám phá các ứng dụng thông minh, tối giản, mang lại tiện ích tối đa cho cuộc sống mỗi ngày của bạn.</p>
 </div>
 
 <div class="container">
   <div class="section-title">Danh sách ứng dụng</div>
-  <div class="app-list" id="appList"></div>
+  <div class="app-list" id="appList">
+    <!-- Cards will be injected here -->
+  </div>
 </div>
 
 <footer>
@@ -258,6 +294,32 @@ footer a:hover {
 
 <script src="js/apps-data.js"></script>
 <script>
+// Detect Language
+const userLang = navigator.language || navigator.userLanguage;
+const uiLang = userLang.toLowerCase().startsWith('vi') ? 'vi' : 'en';
+
+// Translations
+const i18n = {
+  vi: {
+    heroTitle: "Thiết kế cho tương lai.",
+    heroDesc: "Khám phá các ứng dụng thông minh, tối giản, mang lại tiện ích tối đa cho cuộc sống mỗi ngày của bạn.",
+    getBtn: "TẢI VỀ",
+    loading: "Đang cập nhật danh sách ứng dụng. Vui lòng chạy lệnh npm run update-apps để tải dữ liệu."
+  },
+  en: {
+    heroTitle: "Designed for the future.",
+    heroDesc: "Discover smart, minimalist apps that maximize convenience for your everyday life.",
+    getBtn: "GET",
+    loading: "Updating app list. Please run npm run update-apps to fetch data."
+  }
+};
+
+const t = i18n[uiLang];
+
+// Update static text
+document.getElementById('heroTitle').innerText = t.heroTitle;
+document.getElementById('heroDesc').innerText = t.heroDesc;
+
 // Xử lý ẩn/hiện Navigation Bar khi cuộn trang
 const nav = document.querySelector('nav');
 window.addEventListener('scroll', () => {
@@ -272,7 +334,8 @@ const appList = document.getElementById("appList");
 
 if (typeof APPS_DATA !== 'undefined' && APPS_DATA.length > 0) {
   APPS_DATA.forEach(app => {
-    const langData = app.locales['vi'] || app.locales['en'] || {};
+    // Select app data language based on browser language
+    const langData = app.locales[uiLang] || app.locales['en'] || app.locales['vi'] || {};
     
     const card = document.createElement("div");
     card.className = "app-card";
@@ -285,7 +348,7 @@ if (typeof APPS_DATA !== 'undefined' && APPS_DATA.length > 0) {
         <h3>${langData.title || 'App Bridge'}</h3>
         <p>${langData.summary || ''}</p>
       </div>
-      <button class="get-button" onclick="event.stopPropagation(); window.open('${playStoreUrl}', '_blank');">TẢI VỀ</button>
+      <button class="get-button" onclick="event.stopPropagation(); window.open('${playStoreUrl}', '_blank');">${t.getBtn}</button>
     `;
 
     card.onclick = () => {
@@ -295,7 +358,7 @@ if (typeof APPS_DATA !== 'undefined' && APPS_DATA.length > 0) {
     appList.appendChild(card);
   });
 } else {
-  appList.innerHTML = "<p style='grid-column: 1 / -1; text-align: center; color: #86868b; font-size: 16px; padding: 40px;'>Đang cập nhật danh sách ứng dụng. Vui lòng chạy lệnh npm run update-apps để tải dữ liệu.</p>";
+  appList.innerHTML = `<p style='grid-column: 1 / -1; text-align: center; color: #86868b; font-size: 16px; padding: 40px;'>${t.loading}</p>`;
 }
 </script>
 </body>
