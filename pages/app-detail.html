@@ -281,7 +281,7 @@ footer a:hover {
 
 <!-- Navigation -->
 <nav>
-  <a href="index.html" class="back-button">
+  <a href="../index.html" class="back-button">
     <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M10.5 18.5L2 10L10.5 1.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -295,45 +295,19 @@ footer a:hover {
   <div class="error-state">Đang tải thông tin...</div>
 </div>
 
-<script src="js/apps-data.js"></script>
+<script src="../js/apps-data.js"></script>
+<script src="../js/i18n.js"></script>
 <script>
-// Detect Language
-const userLang = navigator.language || navigator.userLanguage;
-const uiLang = userLang.toLowerCase().startsWith('vi') ? 'vi' : 'en';
+// Detect Language dynamically based on i18n object keys
+    const urlParams = new URLSearchParams(window.location.search);
+    const userLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
+    let uiLang = urlParams.get('lang');
+    if (!uiLang || !i18n[uiLang]) {
+      uiLang = i18n[userLang] ? userLang : 'en'; // Fallback to 'en'
+    }
 
-// Translations
-const i18n = {
-  vi: {
-    navAppText: "Ứng dụng",
-    navDetailText: "Chi tiết",
-    notFound: "Không tìm thấy thông tin ứng dụng.",
-    notExist: "Ứng dụng không tồn tại trong hệ thống.",
-    backHome: "Quay lại trang chủ",
-    genreDefault: "Công cụ",
-    getBtn: "TẢI VỀ",
-    rating: "ĐÁNH GIÁ",
-    installs: "LƯỢT TẢI",
-    category: "DANH MỤC",
-    age: "ĐỘ TUỔI",
-    noDesc: "Chưa có mô tả chi tiết."
-  },
-  en: {
-    navAppText: "Apps",
-    navDetailText: "Details",
-    notFound: "App info not found.",
-    notExist: "App does not exist in the system.",
-    backHome: "Back to home",
-    genreDefault: "Tools",
-    getBtn: "GET",
-    rating: "RATINGS",
-    installs: "INSTALLS",
-    category: "CATEGORY",
-    age: "AGE",
-    noDesc: "No description available."
-  }
-};
-
-const t = i18n[uiLang];
+// Translations are loaded from js/i18n.js
+    const t = i18n[uiLang];
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('navAppText').innerText = t.navAppText;
@@ -344,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const appId = urlParams.get('id');
 
   if (!appId || typeof APPS_DATA === 'undefined') {
-    contentDiv.innerHTML = `<div class="error-state">${t.notFound} <br><br><a href="index.html">${t.backHome}</a></div>`;
+    contentDiv.innerHTML = `<div class="error-state">${t.notFound} <br><br><a href="../index.html">${t.backHome}</a></div>`;
     return;
   }
 
@@ -352,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = APPS_DATA.find(a => a.id === appId);
   
   if (!app) {
-    contentDiv.innerHTML = `<div class="error-state">${t.notExist} <br><br><a href="index.html">${t.backHome}</a></div>`;
+    contentDiv.innerHTML = `<div class="error-state">${t.notExist} <br><br><a href="../index.html">${t.backHome}</a></div>`;
     return;
   }
 
@@ -383,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Render toàn bộ giao diện
   contentDiv.innerHTML = `
     <div class="app-header">
-      <img src="${app.iconLocal}" alt="${langData.title}" class="app-icon" onerror="this.src='${langData.icon}'">
+      <img src="../${app.iconLocal}" alt="${langData.title}" class="app-icon" onerror="this.src='${langData.icon}'">
       <div class="app-header-info">
         <div>
           <h1 class="app-title">${langData.title}</h1>

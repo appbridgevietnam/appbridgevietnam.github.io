@@ -16,6 +16,12 @@ const MY_APP_IDS = [
   'vn.lecon.device.info',
 ];
 
+// Danh sách các Ứng dụng nổi bật (Featured Apps)
+const FEATURED_APP_IDS = [
+  'vn.lecon.system.fastchargechecker',
+  'com.appbridgevietnam.expiryreminder',
+];
+
 // Danh sách ngôn ngữ muốn lấy dữ liệu
 const LANGUAGES = ['vi', 'en'];
 
@@ -63,9 +69,10 @@ async function buildAppsData() {
 
     console.log('⏳ Bắt đầu lấy dữ liệu đa ngôn ngữ và tải icon từ Google Play...');
 
-    const appsData = [];
+    const allAppsData = {};
+    const allAppIds = Array.from(new Set([...MY_APP_IDS, ...FEATURED_APP_IDS]));
 
-    for (const appId of MY_APP_IDS) {
+    for (const appId of allAppIds) {
       console.log(`\n▶ Đang xử lý: ${appId}`);
       
       const appDataItem = {
@@ -112,18 +119,22 @@ async function buildAppsData() {
 
       // Chỉ thêm vào danh sách nếu lấy thành công ít nhất 1 ngôn ngữ (Tránh lỗi khi app bị xóa khỏi store hoặc gõ sai ID)
       if (Object.keys(appDataItem.locales).length > 0) {
-        appsData.push(appDataItem);
+        allAppsData[appId] = appDataItem;
       } else {
         console.log(`  [!] Bỏ qua ${appId} vì không tồn tại hoặc lỗi mạng.`);
       }
     }
 
-    // Xuất ra file JavaScript (.js) thay vì JSON để web HTML thuần có thể dùng thẻ <script> gọi dễ dàng
-    const fileContent = `// File này được sinh tự động bởi lệnh: npm run update-apps\n\nconst APPS_DATA = ${JSON.stringify(appsData, null, 2)};\n`;
+    // Lọc lại dữ liệu theo đúng danh sách ban đầu
+    const appsData = MY_APP_IDS.map(id => allAppsData[id]).filter(Boolean);
+    const featuredAppsData = FEATURED_APP_IDS.map(id => allAppsData[id]).filter(Boolean);
+
+    // Xuất ra file JavaScript (.js)
+    const fileContent = `// File này được sinh tự động bởi lệnh: npm run update-apps\n\nconst APPS_DATA = ${JSON.stringify(appsData, null, 2)};\n\nconst FEATURED_APPS_DATA = ${JSON.stringify(featuredAppsData, null, 2)};\n`;
     await fs.writeFile(JS_OUTPUT, fileContent, 'utf-8');
     
     console.log(`\n🎉 Thành công! Đã lưu dữ liệu đa ngôn ngữ tại: ${JS_OUTPUT}`);
-    console.log(`💡 Thêm thẻ <script src="js/apps-data.js"></script> vào index.html để sử dụng biến APPS_DATA.`);
+    console.log(`💡 File JS hiện chứa 2 biến: APPS_DATA và FEATURED_APPS_DATA`);
 
   } catch (error) {
     console.error('\n❌ Có lỗi xảy ra trong quá trình build:', error);

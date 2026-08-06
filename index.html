@@ -108,6 +108,7 @@ nav .brand {
   padding-left: 10px;
 }
 
+
 .app-list {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -249,6 +250,7 @@ footer a:hover {
   nav {
     padding: 12px 16px;
   }
+
 }
 </style>
 </head>
@@ -277,8 +279,15 @@ footer a:hover {
   <p id="heroDesc">Khám phá các ứng dụng thông minh, tối giản, mang lại tiện ích tối đa cho cuộc sống mỗi ngày của bạn.</p>
 </div>
 
+<div class="container" id="featuredContainer" style="display: none; margin-bottom: 20px;">
+  <div class="section-title" id="featuredTitleText">Ứng dụng nổi bật</div>
+  <div class="app-list" id="featuredList">
+    <!-- Featured cards will be injected here -->
+  </div>
+</div>
+
 <div class="container">
-  <div class="section-title">Danh sách ứng dụng</div>
+  <div class="section-title" id="allAppsTitleText">Danh sách ứng dụng</div>
   <div class="app-list" id="appList">
     <!-- Cards will be injected here -->
   </div>
@@ -293,32 +302,24 @@ footer a:hover {
 </footer>
 
 <script src="js/apps-data.js"></script>
+<script src="js/i18n.js"></script>
 <script>
-// Detect Language
-const userLang = navigator.language || navigator.userLanguage;
-const uiLang = userLang.toLowerCase().startsWith('vi') ? 'vi' : 'en';
+// Detect Language dynamically based on i18n object keys
+const urlParams = new URLSearchParams(window.location.search);
+const userLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
+let uiLang = urlParams.get('lang');
+if (!uiLang || !i18n[uiLang]) {
+  uiLang = i18n[userLang] ? userLang : 'en'; // Fallback to 'en'
+}
 
-// Translations
-const i18n = {
-  vi: {
-    heroTitle: "Thiết kế cho tương lai.",
-    heroDesc: "Khám phá các ứng dụng thông minh, tối giản, mang lại tiện ích tối đa cho cuộc sống mỗi ngày của bạn.",
-    getBtn: "TẢI VỀ",
-    loading: "Đang cập nhật danh sách ứng dụng. Vui lòng chạy lệnh npm run update-apps để tải dữ liệu."
-  },
-  en: {
-    heroTitle: "Designed for the future.",
-    heroDesc: "Discover smart, minimalist apps that maximize convenience for your everyday life.",
-    getBtn: "GET",
-    loading: "Updating app list. Please run npm run update-apps to fetch data."
-  }
-};
-
+// Translations are loaded from js/i18n.js
 const t = i18n[uiLang];
 
 // Update static text
 document.getElementById('heroTitle').innerText = t.heroTitle;
 document.getElementById('heroDesc').innerText = t.heroDesc;
+document.getElementById('featuredTitleText').innerText = t.featuredTitle;
+document.getElementById('allAppsTitleText').innerText = t.allAppsTitle;
 
 // Xử lý ẩn/hiện Navigation Bar khi cuộn trang
 const nav = document.querySelector('nav');
@@ -331,31 +332,42 @@ window.addEventListener('scroll', () => {
 });
 
 const appList = document.getElementById("appList");
+const featuredList = document.getElementById("featuredList");
+const featuredContainer = document.getElementById("featuredContainer");
+
+function createCard(app, langData) {
+  const card = document.createElement("div");
+  card.className = "app-card";
+  const playStoreUrl = langData.url || `https://play.google.com/store/apps/details?id=${app.id}`;
+  
+  card.innerHTML = `
+    <img src="${app.iconLocal}" alt="${langData.title || ''}">
+    <div class="app-info">
+      <h3>${langData.title || 'App Bridge'}</h3>
+      <p>${langData.summary || ''}</p>
+    </div>
+    <button class="get-button" onclick="event.stopPropagation(); window.open('${playStoreUrl}', '_blank');">${t.getBtn}</button>
+  `;
+
+  card.onclick = () => {
+    window.location.href = `pages/app-detail.html?id=${app.id}`;
+  };
+  return card;
+}
+
+if (typeof FEATURED_APPS_DATA !== 'undefined' && FEATURED_APPS_DATA.length > 0) {
+  featuredContainer.style.display = 'block';
+  FEATURED_APPS_DATA.forEach(app => {
+    const langData = app.locales[uiLang] || app.locales['en'] || app.locales['vi'] || {};
+    featuredList.appendChild(createCard(app, langData));
+  });
+}
 
 if (typeof APPS_DATA !== 'undefined' && APPS_DATA.length > 0) {
   APPS_DATA.forEach(app => {
     // Select app data language based on browser language
     const langData = app.locales[uiLang] || app.locales['en'] || app.locales['vi'] || {};
-    
-    const card = document.createElement("div");
-    card.className = "app-card";
-
-    const playStoreUrl = langData.url || `https://play.google.com/store/apps/details?id=${app.id}`;
-
-    card.innerHTML = `
-      <img src="${app.iconLocal}" alt="${langData.title || ''}">
-      <div class="app-info">
-        <h3>${langData.title || 'App Bridge'}</h3>
-        <p>${langData.summary || ''}</p>
-      </div>
-      <button class="get-button" onclick="event.stopPropagation(); window.open('${playStoreUrl}', '_blank');">${t.getBtn}</button>
-    `;
-
-    card.onclick = () => {
-      window.location.href = `app-detail.html?id=${app.id}`;
-    };
-
-    appList.appendChild(card);
+    appList.appendChild(createCard(app, langData));
   });
 } else {
   appList.innerHTML = `<p style='grid-column: 1 / -1; text-align: center; color: #86868b; font-size: 16px; padding: 40px;'>${t.loading}</p>`;
