@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chi tiết ứng dụng – App Bridge</title>
+<style>
+/* Apple-style typography and variables */
+:root {
+  --bg-color: #ffffff;
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --blue-accent: #0071e3;
+  --blue-hover: #0077ED;
+  --divider-color: #d2d2d7;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Navigation */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+}
+
+.back-button {
+  color: var(--blue-accent);
+  text-decoration: none;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.back-button:hover { opacity: 0.8; }
+
+.nav-brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+/* Header Section */
+.app-header {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.app-icon {
+  width: 120px;
+  height: 120px;
+  border-radius: 26px;
+  object-fit: cover;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.app-header-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.app-title {
+  margin: 0 0 4px 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.app-developer {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+.get-btn-container {
+  margin-top: 16px;
+}
+
+.get-button {
+  display: inline-block;
+  background: var(--blue-accent);
+  color: #fff;
+  border-radius: 20px;
+  padding: 8px 28px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.get-button:hover { opacity: 0.9; }
+
+/* Stats Badges */
+.app-stats {
+  display: flex;
+  gap: 30px;
+  padding: 16px 0;
+  border-top: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--divider-color);
+  margin-bottom: 30px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Screenshots Wrapper & Buttons */
+.screenshots-wrapper {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: 20px;
+  color: var(--text-primary);
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s, opacity 0.2s;
+  user-select: none;
+}
+
+.scroll-btn:hover {
+  transform: translateY(-50%) scale(1.05);
+}
+
+.left-btn { left: -22px; }
+.right-btn { right: -22px; }
+
+@media (max-width: 840px) {
+  .scroll-btn { display: none; } /* Hide on touch devices */
+}
+
+/* Screenshots */
+.screenshots-container {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+.screenshots-container::-webkit-scrollbar {
+  display: none;
+}
+
+.screenshot {
+  height: 400px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.06);
+  object-fit: contain;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* Description */
+.description-section {
+  margin-top: 20px;
+  border-top: 1px solid var(--divider-color);
+  padding-top: 20px;
+}
+
+.description-content {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+.description-content p {
+  margin-bottom: 16px;
+}
+
+/* Error State */
+.error-state {
+  text-align: center;
+  padding: 100px 20px;
+  color: var(--text-secondary);
+  font-size: 18px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .app-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .app-icon {
+    width: 100px;
+    height: 100px;
+  }
+  .screenshot {
+    height: 320px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav>
+  <a href="index.html" class="back-button">
+    <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10.5 18.5L2 10L10.5 1.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Ứng dụng
+  </a>
+  <div class="nav-brand">Chi tiết</div>
+</nav>
+
+<div id="content" class="container">
+  <!-- Content will be injected here via JS -->
+  <div class="error-state">Đang tải thông tin...</div>
+</div>
+
+<script src="js/apps-data.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const contentDiv = document.getElementById("content");
+  const urlParams = new URLSearchParams(window.location.search);
+  const appId = urlParams.get('id');
+
+  if (!appId || typeof APPS_DATA === 'undefined') {
+    contentDiv.innerHTML = '<div class="error-state">Không tìm thấy thông tin ứng dụng. <br><br><a href="index.html">Quay lại trang chủ</a></div>';
+    return;
+  }
+
+  // Tìm app theo ID
+  const app = APPS_DATA.find(a => a.id === appId);
+  
+  if (!app) {
+    contentDiv.innerHTML = '<div class="error-state">Ứng dụng không tồn tại trong hệ thống. <br><br><a href="index.html">Quay lại trang chủ</a></div>';
+    return;
+  }
+
+  // Lấy dữ liệu ngôn ngữ (Ưu tiên tiếng Việt)
+  const langData = app.locales['vi'] || app.locales['en'] || {};
+  
+  // Xử lý thống kê (Reviews, Installs, v.v.)
+  const score = langData.scoreText || langData.score || 'N/A';
+  const installs = langData.installs || 'N/A';
+  const genre = langData.genre || 'Công cụ';
+
+  // Render Screenshots
+  let screenshotsHTML = '';
+  if (langData.screenshots && langData.screenshots.length > 0) {
+    screenshotsHTML = `
+      <div class="screenshots-wrapper">
+        <button class="scroll-btn left-btn" id="leftBtn">&#10094;</button>
+        <div class="screenshots-container" id="screenshotsContainer">
+          ${langData.screenshots.map(url => `<img class="screenshot" src="${url}" alt="Screenshot">`).join('')}
+        </div>
+        <button class="scroll-btn right-btn" id="rightBtn">&#10095;</button>
+      </div>
+    `;
+  }
+
+  const playStoreUrl = langData.url || `https://play.google.com/store/apps/details?id=${app.id}`;
+
+  // Render toàn bộ giao diện
+  contentDiv.innerHTML = `
+    <div class="app-header">
+      <img src="${app.iconLocal}" alt="${langData.title}" class="app-icon" onerror="this.src='${langData.icon}'">
+      <div class="app-header-info">
+        <div>
+          <h1 class="app-title">${langData.title}</h1>
+          <p class="app-developer">${langData.developer || 'App Bridge'}</p>
+        </div>
+        <div class="get-btn-container">
+          <a href="${playStoreUrl}" target="_blank" class="get-button">TẢI VỀ</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-stats">
+      <div class="stat-item">
+        <span class="stat-label">ĐÁNH GIÁ</span>
+        <span class="stat-value">${score}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">LƯỢT TẢI</span>
+        <span class="stat-value">${installs}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">DANH MỤC</span>
+        <span class="stat-value" style="font-size:16px; margin-top:4px;">${genre}</span>
+      </div>
+      ${langData.contentRating ? `
+      <div class="stat-item">
+        <span class="stat-label">ĐỘ TUỔI</span>
+        <span class="stat-value" style="font-size:16px; margin-top:4px;">${langData.contentRating}</span>
+      </div>` : ''}
+    </div>
+
+    ${screenshotsHTML}
+
+    <div class="description-section">
+      <div class="description-content">
+        ${langData.descriptionHTML || langData.description || 'Chưa có mô tả chi tiết.'}
+      </div>
+    </div>
+  `;
+
+    // Gắn sự kiện cho nút cuộn ảnh
+    const container = document.getElementById('screenshotsContainer');
+    const leftBtn = document.getElementById('leftBtn');
+    const rightBtn = document.getElementById('rightBtn');
+
+    if (container && leftBtn && rightBtn) {
+      leftBtn.addEventListener('click', () => {
+        container.scrollBy({ left: -350, behavior: 'smooth' });
+      });
+      rightBtn.addEventListener('click', () => {
+        container.scrollBy({ left: 350, behavior: 'smooth' });
+      });
+      
+      const updateButtons = () => {
+        leftBtn.style.opacity = container.scrollLeft > 10 ? '1' : '0.3';
+        
+        // Chỉ mờ nút phải khi đã chắc chắn cuộn đến cuối cùng
+        const isAtEnd = container.scrollWidth > container.clientWidth && 
+                        container.scrollLeft >= (container.scrollWidth - container.clientWidth - 10);
+        rightBtn.style.opacity = isAtEnd ? '0.3' : '1';
+      };
+      
+      container.addEventListener('scroll', updateButtons);
+      window.addEventListener('resize', updateButtons);
+      
+      // Update lại sau khi ảnh load xong để có kích thước chính xác
+      setTimeout(updateButtons, 500); 
+      updateButtons();
+    }
+});
+</script>
+</body>
+</html>
