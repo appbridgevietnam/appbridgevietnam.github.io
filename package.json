@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "update-apps": "node scripts/build-data.js",
+    "update-data-only": "node scripts/build-data.js --no-images",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

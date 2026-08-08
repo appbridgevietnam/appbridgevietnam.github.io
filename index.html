@@ -267,10 +267,7 @@ footer a:hover {
 
 <!-- Hero Banner -->
 <div class="banner-full">
-  <picture>
-    <source media="(max-width: 768px)" srcset="images/common/banner-mobile.jpg">
-    <img src="images/common/banner.jpg" alt="App Bridge Banner">
-  </picture>
+  <img src="images/common/banner.jpg" alt="App Bridge Banner">
 </div>
 
 <!-- Hero Section -->
@@ -338,7 +335,7 @@ const featuredContainer = document.getElementById("featuredContainer");
 function createCard(app, langData) {
   const card = document.createElement("div");
   card.className = "app-card";
-  const playStoreUrl = langData.url || `https://play.google.com/store/apps/details?id=${app.id}`;
+  const playStoreUrl = `https://play.google.com/store/apps/details?id=${app.id}`;
   
   card.innerHTML = `
     <img src="${app.iconLocal}" alt="${langData.title || ''}">

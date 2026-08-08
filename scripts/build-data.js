@@ -54,10 +54,18 @@ async function downloadIcon(imageUrl, filename) {
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function buildAppsData() {
+  const skipImages = process.argv.includes('--no-images');
+  
   try {
-    console.log('🧹 Đang dọn dẹp dữ liệu cũ (Xóa icon cũ, cache cũ)...');
-    // Xóa sạch thư mục icon và tạo lại trống
-    await fs.emptyDir(ICONS_DIR);
+    if (skipImages) {
+      console.log('🧹 Chế độ --no-images: Bỏ qua việc xóa và tải lại icon mới...');
+      await fs.ensureDir(ICONS_DIR);
+    } else {
+      console.log('🧹 Đang dọn dẹp dữ liệu cũ (Xóa icon cũ, cache cũ)...');
+      // Xóa sạch thư mục icon và tạo lại trống
+      await fs.emptyDir(ICONS_DIR);
+    }
+
     
     // Đảm bảo thư mục js tồn tại
     await fs.ensureDir(path.dirname(JS_OUTPUT));
@@ -110,11 +118,13 @@ async function buildAppsData() {
         }
       }
 
-      // Tải icon nếu có URL
-      if (iconUrl) {
+      // Tải icon nếu có URL và không ở chế độ skipImages
+      if (iconUrl && !skipImages) {
         const iconFileName = `${appId}.png`;
         await downloadIcon(iconUrl, iconFileName);
         console.log(`  ✓ Đã tải icon mới: ${iconFileName}`);
+      } else if (iconUrl && skipImages) {
+        console.log(`  ✓ Bỏ qua tải icon: ${appId}.png`);
       }
 
       // Chỉ thêm vào danh sách nếu lấy thành công ít nhất 1 ngôn ngữ (Tránh lỗi khi app bị xóa khỏi store hoặc gõ sai ID)
