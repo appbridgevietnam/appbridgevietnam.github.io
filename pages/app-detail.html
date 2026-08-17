@@ -280,14 +280,16 @@ footer a:hover {
 <body>
 
 <!-- Navigation -->
-<nav>
-  <a href="../index.html" class="back-button">
-    <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<nav style="display: flex; align-items: center;">
+  <a href="../index.html" class="back-button" style="display: flex; align-items: center; text-decoration: none; color: #0071e3; font-size: 17px; font-weight: 400;">
+    <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px;">
       <path d="M10.5 18.5L2 10L10.5 1.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     <span id="navAppText">Apps</span>
   </a>
-  <div class="nav-brand" id="navDetailText">Details</div>
+  <div style="flex: 1; text-align: center; font-size: 17px; font-weight: 600; padding-right: 70px;" id="navDetailText">
+    Chi tiết
+  </div>
 </nav>
 
 <div id="content" class="container">
@@ -310,11 +312,28 @@ footer a:hover {
     const t = i18n[uiLang];
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById('navAppText').innerText = t.navAppText;
-  document.getElementById('navDetailText').innerText = t.navDetailText;
-
-  const contentDiv = document.getElementById("content");
   const urlParams = new URLSearchParams(window.location.search);
+  
+  const backBtn = document.querySelector('.back-button');
+  if (urlParams.get('from') === 'top') {
+    backBtn.href = 'top-apps.html';
+    document.getElementById('navAppText').innerText = t.navTopText;
+  } else {
+    backBtn.href = '../index.html';
+    document.getElementById('navAppText').innerText = t.navHomeText;
+  }
+
+  // Use history.back() if possible to prevent polluting the browser history stack
+  backBtn.addEventListener('click', (e) => {
+    if (window.history.length > 1) {
+      e.preventDefault();
+      window.history.back();
+    }
+  });
+
+  document.getElementById('navDetailText').innerText = t.navDetailText;
+  
+  const contentDiv = document.getElementById("content");
   const appId = urlParams.get('id');
 
   if (!appId || typeof APPS_DATA === 'undefined') {

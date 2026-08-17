@@ -1,3 +1,5 @@
+https://appbridgevietnam.github.io/
+
 1. npm run update-apps: Lệnh cũ, sẽ xóa hết thư mục ảnh cũ, tải lại toàn bộ nội dung text và TẢI LẠI TOÀN BỘ ẢNH ICON (Phù hợp khi bạn có app mới hoặc app vừa đổi icon).
 
 2. npm run update-data-only: Lệnh mới tôi vừa thêm vào, lệnh này sẽ BỎ QUA việc xóa thư mục ảnh và bỏ qua tải ảnh, nó chỉ lấy về dữ liệu chữ (tên app, mô tả, lượt tải, v.v) cực kỳ nhanh chóng. (Phù hợp khi bạn chỉ muốn cập nhật lượt tải, đánh giá hoặc nội dung text mà icon vẫn giữ nguyên).

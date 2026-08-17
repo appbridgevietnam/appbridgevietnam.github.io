@@ -46,8 +46,8 @@ const APPS_DATA = [
             "id": "PRODUCTIVITY"
           }
         ],
-        "icon": "https://play-lh.googleusercontent.com/dCOol1KSK6b3QwQDqz3OdhrhNLY-nu0NCEPrduojI09xcX2uYkJKjUKJ1RssJvYePB_a3ZZm--Dc4cATjbPAbiA",
-        "headerImage": "https://play-lh.googleusercontent.com/FQp8-s1wRvNeJ2jIqwfLDxoZ5rwxF8wJbt4wMzaqDE-J2jomB5u375AcilmVRkKYoY__efOrzl0GhQfwGI-6Ew",
+        "icon": "https://play-lh.googleusercontent.com/2q1G7un_LofebrCKoA34cAa0aCdZiYrXdxzsY3pBIvtU6-bSFqkg4t7kIeiL7Qm5YlBpoxDAKK21lYToP4zW4w",
+        "headerImage": "https://play-lh.googleusercontent.com/OaNanvWxTA7VYCPkk1kD572Ua_FwJJq-EnrINGON_xh5LJt9mBPed9PK_Zk7Q4apcjnOLHURW6VcXoj8MQjWxQ",
         "screenshots": [
           "https://play-lh.googleusercontent.com/_a8lzzyoD7VV1uLUxoIWQouLXTo6JP5tqoqXVS8frfzycARE9Zai_MFI54_tj6sHE28YtSolN1DpiCQNCI3-5LQ",
           "https://play-lh.googleusercontent.com/zJzKGZd2K5SdIyz-GPdQ2Bc66AEl0Usuu2lmsY7_d3CKZDqYGDFzjByEEroU0pur6W8vgZ1mbzW3_MUGEMYcgvU",
@@ -59,8 +59,8 @@ const APPS_DATA = [
         "contentRating": "3 tuổi trở lên",
         "adSupported": true,
         "released": "9 thg 3, 2026",
-        "updated": 1786808088000,
-        "version": "2.4",
+        "updated": 1786980457000,
+        "version": "2.5",
         "comments": [],
         "preregister": false,
         "earlyAccessEnabled": false,
@@ -109,8 +109,8 @@ const APPS_DATA = [
             "id": "PRODUCTIVITY"
           }
         ],
-        "icon": "https://play-lh.googleusercontent.com/dCOol1KSK6b3QwQDqz3OdhrhNLY-nu0NCEPrduojI09xcX2uYkJKjUKJ1RssJvYePB_a3ZZm--Dc4cATjbPAbiA",
-        "headerImage": "https://play-lh.googleusercontent.com/FQp8-s1wRvNeJ2jIqwfLDxoZ5rwxF8wJbt4wMzaqDE-J2jomB5u375AcilmVRkKYoY__efOrzl0GhQfwGI-6Ew",
+        "icon": "https://play-lh.googleusercontent.com/2q1G7un_LofebrCKoA34cAa0aCdZiYrXdxzsY3pBIvtU6-bSFqkg4t7kIeiL7Qm5YlBpoxDAKK21lYToP4zW4w",
+        "headerImage": "https://play-lh.googleusercontent.com/OaNanvWxTA7VYCPkk1kD572Ua_FwJJq-EnrINGON_xh5LJt9mBPed9PK_Zk7Q4apcjnOLHURW6VcXoj8MQjWxQ",
         "screenshots": [
           "https://play-lh.googleusercontent.com/LUWVHJfXg4T2NOO20LikAvM3qMU84lJE3Jh6UI8mkQEXa5jw5SW0Bsu5XQZ0xDkLnHb6ygUxXEmJpbvPSIycCjA",
           "https://play-lh.googleusercontent.com/JXFpdHjIZMOwchCsZ48xlzkBMAZGzwaAY7RjtVAVRU49R0TYjqdP69iYtl2A78C_T-cFpzPmvQP64aELd2GN",
@@ -122,8 +122,8 @@ const APPS_DATA = [
         "contentRating": "Everyone",
         "adSupported": true,
         "released": "Mar 9, 2026",
-        "updated": 1786808088000,
-        "version": "2.4",
+        "updated": 1786980457000,
+        "version": "2.5",
         "comments": [],
         "preregister": false,
         "earlyAccessEnabled": false,
