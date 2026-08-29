@@ -362,7 +362,7 @@ function renderApps() {
   const sortedApps = [...APPS_DATA].sort((a, b) => {
     const aData = a.locales[uiLang] || a.locales['en'] || a.locales['vi'] || {};
     const bData = b.locales[uiLang] || b.locales['en'] || b.locales['vi'] || {};
-    return (bData.minInstalls || 0) - (aData.minInstalls || 0);
+    return (bData.maxInstalls || 0) - (aData.maxInstalls || 0);
   });
 
   sortedApps.forEach((app, index) => {
