@@ -295,7 +295,7 @@ footer a:hover {
 // Detect Language dynamically based on i18n object keys
 const urlParams = new URLSearchParams(window.location.search);
 const userLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
-let uiLang = urlParams.get('lang');
+let uiLang = urlParams.get('ln');
 if (!uiLang || !i18n[uiLang]) {
   uiLang = i18n[userLang] ? userLang : 'en'; // Fallback to 'en'
 }
@@ -303,6 +303,7 @@ if (!uiLang || !i18n[uiLang]) {
 // Translations are loaded from js/i18n.js
 const backBtn = document.querySelector('.back-button');
 if (backBtn) {
+  backBtn.href = `../index.html?ln=${uiLang}`;
   backBtn.addEventListener('click', (e) => {
     if (window.history.length > 1) {
       e.preventDefault();
@@ -343,7 +344,7 @@ function createCard(app, langData, index) {
   `;
 
   card.onclick = () => {
-    window.location.href = `app-detail.html?id=${app.id}&from=top`;
+    window.location.href = `app-detail.html?id=${app.id}&from=top&ln=${uiLang}`;
   };
   return card;
 }

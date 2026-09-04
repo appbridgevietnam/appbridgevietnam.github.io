@@ -308,7 +308,7 @@ footer a:hover {
 // Detect Language dynamically based on i18n object keys
 const urlParams = new URLSearchParams(window.location.search);
 const userLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
-let uiLang = urlParams.get('lang');
+let uiLang = urlParams.get('ln');
 if (!uiLang || !i18n[uiLang]) {
   uiLang = i18n[userLang] ? userLang : 'en'; // Fallback to 'en'
 }
@@ -323,6 +323,7 @@ document.getElementById('featuredTitleText').innerText = t.featuredTitle;
 document.getElementById('allAppsTitleText').innerText = t.allAppsTitle;
 document.getElementById('navHomeText').innerText = t.navHomeText;
 document.getElementById('navTopText').innerText = t.navTopText;
+document.getElementById('navTopText').href = `pages/top-apps.html?ln=${uiLang}`;
 
 // Xử lý ẩn/hiện Navigation Bar khi cuộn trang
 const nav = document.querySelector('nav');
@@ -353,7 +354,7 @@ function createCard(app, langData) {
   `;
 
   card.onclick = () => {
-    window.location.href = `pages/app-detail.html?id=${app.id}`;
+    window.location.href = `pages/app-detail.html?id=${app.id}&ln=${uiLang}`;
   };
   return card;
 }

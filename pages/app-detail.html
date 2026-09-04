@@ -303,7 +303,7 @@ footer a:hover {
 // Detect Language dynamically based on i18n object keys
     const urlParams = new URLSearchParams(window.location.search);
     const userLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
-    let uiLang = urlParams.get('lang');
+    let uiLang = urlParams.get('ln');
     if (!uiLang || !i18n[uiLang]) {
       uiLang = i18n[userLang] ? userLang : 'en'; // Fallback to 'en'
     }
@@ -316,10 +316,10 @@ document.addEventListener("DOMContentLoaded", () => {
   
   const backBtn = document.querySelector('.back-button');
   if (urlParams.get('from') === 'top') {
-    backBtn.href = 'top-apps.html';
+    backBtn.href = `top-apps.html?ln=${uiLang}`;
     document.getElementById('navAppText').innerText = t.navTopText;
   } else {
-    backBtn.href = '../index.html';
+    backBtn.href = `../index.html?ln=${uiLang}`;
     document.getElementById('navAppText').innerText = t.navHomeText;
   }
 
@@ -337,7 +337,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const appId = urlParams.get('id');
 
   if (!appId || typeof APPS_DATA === 'undefined') {
-    contentDiv.innerHTML = `<div class="error-state">${t.notFound} <br><br><a href="../index.html">${t.backHome}</a></div>`;
+    contentDiv.innerHTML = `<div class="error-state">${t.notFound} <br><br><a href="../index.html?ln=${uiLang}">${t.backHome}</a></div>`;
     return;
   }
 
@@ -345,7 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = APPS_DATA.find(a => a.id === appId);
   
   if (!app) {
-    contentDiv.innerHTML = `<div class="error-state">${t.notExist} <br><br><a href="../index.html">${t.backHome}</a></div>`;
+    contentDiv.innerHTML = `<div class="error-state">${t.notExist} <br><br><a href="../index.html?ln=${uiLang}">${t.backHome}</a></div>`;
     return;
   }
 

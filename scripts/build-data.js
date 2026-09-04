@@ -23,7 +23,27 @@ const FEATURED_APP_IDS = [
 ];
 
 // Danh sách ngôn ngữ muốn lấy dữ liệu
-const LANGUAGES = ['vi', 'en'];
+const LANGUAGES = [
+  'en', 'af', 'id', 'ms', 'cs', 'da', 'de', 'es', 'fil', 'fr',
+  'hr', 'it', 'sw', 'hu', 'nl', 'nb', 'uz', 'pl', 'pt', 'ro',
+  'sk', 'fi', 'sv', 'vi', 'tr', 'el', 'bg', 'be', 'ky', 'kk',
+  'ru', 'sr', 'uk', 'iw', 'ar', 'fa', 'ur', 'am', 'mr', 'ne',
+  'hi', 'bn', 'ta', 'te', 'si', 'th', 'lo', 'my', 'km', 'ko',
+  'ja', 'zh-CN', 'zh-TW', 'zh-HK'
+];
+
+// Bản đồ ánh xạ ngôn ngữ sang quốc gia để lấy đúng rating/dữ liệu của từng vùng
+const LANG_TO_COUNTRY = {
+  'vi': 'vn', 'ja': 'jp', 'ko': 'kr', 'zh-CN': 'cn', 'zh-TW': 'tw', 'zh-HK': 'hk',
+  'ru': 'ru', 'sr': 'rs', 'uk': 'ua', 'iw': 'il', 'ar': 'ae', 'fa': 'ir',
+  'ur': 'pk', 'am': 'et', 'mr': 'in', 'ne': 'np', 'hi': 'in', 'bn': 'bd',
+  'ta': 'in', 'te': 'in', 'si': 'lk', 'th': 'th', 'lo': 'la', 'my': 'mm',
+  'km': 'kh', 'en': 'us', 'af': 'za', 'id': 'id', 'ms': 'my', 'cs': 'cz',
+  'da': 'dk', 'de': 'de', 'es': 'es', 'fil': 'ph', 'fr': 'fr', 'hr': 'hr',
+  'it': 'it', 'sw': 'ke', 'hu': 'hu', 'nl': 'nl', 'nb': 'no', 'uz': 'uz',
+  'pl': 'pl', 'pt': 'pt', 'ro': 'ro', 'sk': 'sk', 'fi': 'fi', 'sv': 'se',
+  'tr': 'tr', 'el': 'gr', 'bg': 'bg', 'be': 'by', 'ky': 'kg', 'kk': 'kz'
+};
 
 // Cấu hình đường dẫn thư mục
 const PROJECT_ROOT = path.join(__dirname, '..');
@@ -82,6 +102,7 @@ async function buildAppsData() {
 
     for (const appId of allAppIds) {
       console.log(`\n▶ Đang xử lý: ${appId}`);
+      console.log(`  - Đang tải đồng thời ${LANGUAGES.length} ngôn ngữ...`);
       
       const appDataItem = {
         id: appId,
@@ -91,30 +112,41 @@ async function buildAppsData() {
 
       let iconUrl = null;
 
-      // Lặp qua từng ngôn ngữ
-      for (const lang of LANGUAGES) {
-        try {
-          console.log(`  - Fetching [${lang.toUpperCase()}]...`);
-          // Cào dữ liệu theo ngôn ngữ (ví dụ lang: 'vi', country: 'vn' hoặc 'us')
-          const appInfo = await gplay.app({ 
-            appId, 
-            lang: lang, 
-            country: lang === 'vi' ? 'vn' : 'us' 
-          });
-
-          // Lưu toàn bộ dữ liệu vào trường locales
-          appDataItem.locales[lang] = appInfo;
-          
-          // Lấy URL icon từ bất kỳ ngôn ngữ nào (icon giống nhau)
-          if (!iconUrl && appInfo.icon) {
-            iconUrl = appInfo.icon;
+      // Hàm fetch cho 1 ngôn ngữ với cơ chế tự động thử lại
+      const fetchLangWithRetry = async (lang) => {
+        let attempt = 0;
+        const maxRetries = 3; // Thử tối đa 3 lần
+        while (attempt < maxRetries) {
+          try {
+            const appInfo = await gplay.app({ 
+              appId, 
+              lang: lang, 
+              country: LANG_TO_COUNTRY[lang] || 'us' 
+            });
+            return { lang, success: true, data: appInfo };
+          } catch (err) {
+            attempt++;
+            if (attempt >= maxRetries) {
+              console.error(`  [X] Thất bại hoàn toàn cho ${lang.toUpperCase()} sau ${maxRetries} lần thử.`);
+              return { lang, success: false, error: err };
+            }
+            console.log(`  [!] Lỗi lấy ${lang.toUpperCase()} (Lần ${attempt}/${maxRetries}). Tự động thử lại sau 2s...`);
+            await delay(2000); // Đợi 2s trước khi thử lại
           }
+        }
+      };
 
-          // Delay 1.5s giữa các request để an toàn
-          await delay(1500);
+      // Gửi toàn bộ request của 1 app cùng lúc
+      const fetchPromises = LANGUAGES.map(lang => fetchLangWithRetry(lang));
+      const results = await Promise.all(fetchPromises);
 
-        } catch (fetchErr) {
-          console.error(`  [!] Không thể lấy thông tin cho ${appId} (Ngôn ngữ: ${lang}):`, fetchErr.message);
+      // Xử lý kết quả trả về
+      for (const res of results) {
+        if (res.success && res.data) {
+          appDataItem.locales[res.lang] = res.data;
+          if (!iconUrl && res.data.icon) {
+            iconUrl = res.data.icon;
+          }
         }
       }
 
@@ -130,8 +162,9 @@ async function buildAppsData() {
       // Chỉ thêm vào danh sách nếu lấy thành công ít nhất 1 ngôn ngữ (Tránh lỗi khi app bị xóa khỏi store hoặc gõ sai ID)
       if (Object.keys(appDataItem.locales).length > 0) {
         allAppsData[appId] = appDataItem;
+        console.log(`  ✓ Đã tải xong ${Object.keys(appDataItem.locales).length}/${LANGUAGES.length} ngôn ngữ cho ${appId}`);
       } else {
-        console.log(`  [!] Bỏ qua ${appId} vì không tồn tại hoặc lỗi mạng.`);
+        console.log(`  [!] Bỏ qua ${appId} vì không tồn tại hoặc lỗi mạng tất cả ngôn ngữ.`);
       }
     }
 
