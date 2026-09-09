@@ -1,8 +1,8 @@
 https://appbridgevietnam.github.io/
 
-1. npm run update-apps
+npm run update-apps
 
-2. npm run update-data-only
+npm run update-data-only
 
 git add .
 
