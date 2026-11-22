@@ -134,6 +134,7 @@ nav {
   flex-direction: column;
   align-items: center;
   min-width: 80px;
+  flex-shrink: 0;
 }
 
 .stat-label {
@@ -142,12 +143,14 @@ nav {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 4px;
+  white-space: nowrap;
 }
 
 .stat-value {
   font-size: 22px;
   font-weight: 700;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 
 /* Screenshots Wrapper & Buttons */
@@ -356,6 +359,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const score = langData.scoreText || langData.score || 'N/A';
   const installs = langData.installs || 'N/A';
   const genre = langData.genre || t.genreDefault;
+  const showAll = urlParams.get('view') === 'all';
+  const rawMaxInstalls = langData.maxInstalls ?? app.locales['en']?.maxInstalls ?? app.locales['vi']?.maxInstalls;
+  let maxInstallsFormatted = null;
+  if (showAll && rawMaxInstalls !== undefined && rawMaxInstalls !== null) {
+    try {
+      maxInstallsFormatted = Number(rawMaxInstalls).toLocaleString(uiLang === 'iw' ? 'he' : uiLang);
+    } catch (e) {
+      maxInstallsFormatted = Number(rawMaxInstalls).toLocaleString();
+    }
+  }
 
   // Render Screenshots
   let screenshotsHTML = '';
@@ -405,6 +418,11 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="stat-item">
         <span class="stat-label">${t.age}</span>
         <span class="stat-value" style="font-size:16px; margin-top:4px;">${langData.contentRating}</span>
+      </div>` : ''}
+      ${maxInstallsFormatted !== null ? `
+      <div class="stat-item">
+        <span class="stat-label">TOTAL INSTALLS</span>
+        <span class="stat-value">${maxInstallsFormatted}</span>
       </div>` : ''}
     </div>
 
